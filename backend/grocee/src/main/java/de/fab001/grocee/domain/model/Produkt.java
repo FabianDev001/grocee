@@ -1,4 +1,4 @@
-package main.java.de.fab001.grocee.domain;
+package de.fab001.grocee.domain.model;
 
 import java.util.Objects;
 import java.util.UUID;

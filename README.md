@@ -3,8 +3,8 @@
 [![Java](https://img.shields.io/badge/Backend-Java-blue.svg?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.7-green.svg?style=flat&logo=springboot)](https://spring.io/projects/spring-boot)
 [![Next.js](https://img.shields.io/badge/Frontend-Next.js-black.svg?style=flat&logo=next.js)](https://nextjs.org/)
-[![License](https://img.shields.io/github/license/fab001/grocee?style=flat)](LICENSE)
-[![Build](https://img.shields.io/github/actions/workflow/status/fab001/grocee/build.yml?branch=main)](../../actions)
+[![License](https://img.shields.io/github/license/FabianDev001/grocee?style=flat)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/FabianDev001/grocee/build.yml?branch=main)](../../actions)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-success)](#)
 
 ---
@@ -100,7 +100,6 @@ Standard-Port ist `http://localhost:3000`
 - [ ] Auth + Session (JWT oder Clerk/Supabase)
 - [ ] Kostenaufteilungs-Logik
 - [ ] Budget-UI & Visualisierung
-- [ ] PDF-Export für Einkaufszettel
 
 ---
 

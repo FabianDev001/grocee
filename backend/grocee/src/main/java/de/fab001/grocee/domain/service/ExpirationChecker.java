@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class Haltbarkeitspruefer {
+public class ExpirationChecker {
 
     public List<Produkt> findeAbgelaufene(List<Produkt> produkte) {
         return produkte.stream()

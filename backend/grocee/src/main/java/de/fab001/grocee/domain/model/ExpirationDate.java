@@ -3,38 +3,38 @@ package de.fab001.grocee.domain.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public final class Haltbarkeitsdatum {
-    private final LocalDate datum;
+public final class ExpirationDate {
+    private final LocalDate date;
 
-    public Haltbarkeitsdatum(LocalDate datum) {
+    public ExpirationDate(LocalDate datum) {
         if (datum == null || datum.isBefore(LocalDate.now().minusYears(5))) {
             throw new IllegalArgumentException("Ungültiges Haltbarkeitsdatum");
         }
-        this.datum = datum;
+        this.date = datum;
     }
 
     public boolean istAbgelaufen() {
-        return datum.isBefore(LocalDate.now());
+        return date.isBefore(LocalDate.now());
     }
 
     public boolean istKurzVorAblauf() {
-        return datum.isBefore(LocalDate.now().plusDays(3));
+        return date.isBefore(LocalDate.now().plusDays(3));
     }
 
-    public LocalDate getDatum() {
-        return datum;
+    public LocalDate getDate() {
+        return date;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Haltbarkeitsdatum)) return false;
-        Haltbarkeitsdatum that = (Haltbarkeitsdatum) o;
-        return datum.equals(that.datum);
+        if (!(o instanceof ExpirationDate)) return false;
+        ExpirationDate that = (ExpirationDate) o;
+        return date.equals(that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(datum);
+        return Objects.hash(date);
     }
 }

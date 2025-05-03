@@ -2,16 +2,16 @@ package de.fab001.grocee.domain.model;
 
 import java.util.*;
 
-public class Einkaufsliste {
+public class ShoppingList {
     private final UUID id;
-    private final List<Produkt> produkte = new ArrayList<>();
+    private final List<Product> produkte = new ArrayList<>();
 
-    public Einkaufsliste() {
+    public ShoppingList() {
         this.id = UUID.randomUUID();
     }
 
-    public void produktHinzufügen(Produkt produkt) {
-        Optional<Produkt> existierendes = produkte.stream()
+    public void produktHinzufügen(Product produkt) {
+        Optional<Product> existierendes = produkte.stream()
             .filter(p -> p.getName().equalsIgnoreCase(produkt.getName()))
             .findFirst();
 
@@ -22,7 +22,7 @@ public class Einkaufsliste {
         produkte.add(produkt);
     }
 
-    public List<Produkt> getProdukte() {
+    public List<Product> getProdukte() {
         return Collections.unmodifiableList(produkte);
     }
 

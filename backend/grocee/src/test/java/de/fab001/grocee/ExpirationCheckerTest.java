@@ -2,7 +2,7 @@ package de.fab001.grocee;
 
 import de.fab001.grocee.domain.model.Haltbarkeitsdatum;
 import de.fab001.grocee.domain.model.Produkt;
-import de.fab001.grocee.domain.service.Haltbarkeitspruefer;
+import de.fab001.grocee.domain.service.ExpirationChecker;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ class HaltbarkeitsprueferTest {
                 new Haltbarkeitsdatum(LocalDate.now().minusDays(5)));
 
         List<Produkt> produkte = List.of(p1, p2, p3);
-        Haltbarkeitspruefer prefer = new Haltbarkeitspruefer();
+        ExpirationChecker prefer = new ExpirationChecker();
 
         List<Produkt> abgelaufen = prefer.findeAbgelaufene(produkte);
 
@@ -41,7 +41,7 @@ class HaltbarkeitsprueferTest {
                 new Haltbarkeitsdatum(LocalDate.now().plusDays(10)));
 
         List<Produkt> produkte = List.of(p1, p2);
-        Haltbarkeitspruefer prefer = new Haltbarkeitspruefer();
+        ExpirationChecker prefer = new ExpirationChecker();
 
         List<Produkt> baldAbgelaufen = prefer.findeKurzVorAblauf(produkte);
 

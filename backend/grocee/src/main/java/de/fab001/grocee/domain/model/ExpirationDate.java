@@ -13,11 +13,11 @@ public final class ExpirationDate {
         this.date = datum;
     }
 
-    public boolean istAbgelaufen() {
+    public boolean isExpired() {
         return date.isBefore(LocalDate.now());
     }
 
-    public boolean istKurzVorAblauf() {
+    public boolean isCloseToExpire() {
         return date.isBefore(LocalDate.now().plusDays(3));
     }
 

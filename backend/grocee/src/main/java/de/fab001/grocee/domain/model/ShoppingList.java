@@ -4,26 +4,26 @@ import java.util.*;
 
 public class ShoppingList {
     private final UUID id;
-    private final List<Product> produkte = new ArrayList<>();
+    private final List<Product> products = new ArrayList<>();
 
     public ShoppingList() {
         this.id = UUID.randomUUID();
     }
 
-    public void produktHinzufügen(Product produkt) {
-        Optional<Product> existierendes = produkte.stream()
-            .filter(p -> p.getName().equalsIgnoreCase(produkt.getName()))
+    public void addProduct(Product product) {
+        Optional<Product> existing = products.stream()
+            .filter(p -> p.getName().equalsIgnoreCase(product.getName()))
             .findFirst();
 
-        if (existierendes.isPresent()) {
+        if (existing.isPresent()) {
             throw new IllegalArgumentException("Produkt existiert bereits in der Liste");
         }
 
-        produkte.add(produkt);
+        products.add(product);
     }
 
-    public List<Product> getProdukte() {
-        return Collections.unmodifiableList(produkte);
+    public List<Product> getProduct() {
+        return Collections.unmodifiableList(products);
     }
 
     public UUID getId() {

@@ -1,7 +1,7 @@
 package de.fab001.grocee;
 
-import de.fab001.grocee.domain.model.Haltbarkeitsdatum;
-import de.fab001.grocee.domain.model.Produkt;
+import de.fab001.grocee.domain.model.ExpirationDate;
+import de.fab001.grocee.domain.model.Product;
 import de.fab001.grocee.domain.service.ExpirationChecker;
 import org.junit.jupiter.api.Test;
 
@@ -11,42 +11,42 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HaltbarkeitsprueferTest {
+class ExpirationCheckerTest {
 
     @Test
     void findsOnlyExpiredProducts() {
-        Produkt p1 = new Produkt("Milch", "Getränk", "Marke A",
-                new Haltbarkeitsdatum(LocalDate.now().minusDays(1)));
-        Produkt p2 = new Produkt("Brot", "Backwaren", "Marke B",
-                new Haltbarkeitsdatum(LocalDate.now().plusDays(2)));
-        Produkt p3 = new Produkt("Käse", "Kühlung", "Marke C",
-                new Haltbarkeitsdatum(LocalDate.now().minusDays(5)));
+        Product p1 = new Product("Milch", "Getränk", "Marke A",
+                new ExpirationDate(LocalDate.now().minusDays(1)));
+        Product p2 = new Product("Brot", "Backwaren", "Marke B",
+                new ExpirationDate(LocalDate.now().plusDays(2)));
+        Product p3 = new Product("Käse", "Kühlung", "Marke C",
+                new ExpirationDate(LocalDate.now().minusDays(5)));
 
-        List<Produkt> produkte = List.of(p1, p2, p3);
+        List<Product> products = List.of(p1, p2, p3);
         ExpirationChecker prefer = new ExpirationChecker();
 
-        List<Produkt> abgelaufen = prefer.findeAbgelaufene(produkte);
+        List<Product> expired = prefer.findExpired(products);
 
-        assertEquals(2, abgelaufen.size());
-        assertTrue(abgelaufen.contains(p1));
-        assertTrue(abgelaufen.contains(p3));
-        assertFalse(abgelaufen.contains(p2));
+        assertEquals(2, expired.size());
+        assertTrue(expired.contains(p1));
+        assertTrue(expired.contains(p3));
+        assertFalse(expired.contains(p2));
     }
 
     @Test
     void findsProductsExpiringSoon() {
-        Produkt p1 = new Produkt("Joghurt", "Milchprodukte", "Marke X",
-                new Haltbarkeitsdatum(LocalDate.now().plusDays(1)));
-        Produkt p2 = new Produkt("Reis", "Trockenware", "Marke Y",
-                new Haltbarkeitsdatum(LocalDate.now().plusDays(10)));
+        Product p1 = new Product("Joghurt", "MilchProducte", "Marke X",
+                new ExpirationDate(LocalDate.now().plusDays(1)));
+        Product p2 = new Product("Reis", "Trockenware", "Marke Y",
+                new ExpirationDate(LocalDate.now().plusDays(10)));
 
-        List<Produkt> produkte = List.of(p1, p2);
+        List<Product> products = List.of(p1, p2);
         ExpirationChecker prefer = new ExpirationChecker();
 
-        List<Produkt> baldAbgelaufen = prefer.findeKurzVorAblauf(produkte);
+        List<Product> closeToExpire = prefer.findCloseToExpire(products);
 
-        assertEquals(1, baldAbgelaufen.size());
-        assertTrue(baldAbgelaufen.contains(p1));
-        assertFalse(baldAbgelaufen.contains(p2));
+        assertEquals(1, closeToExpire.size());
+        assertTrue(closeToExpire.contains(p1));
+        assertFalse(closeToExpire.contains(p2));
     }
 }

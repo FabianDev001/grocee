@@ -1,28 +1,28 @@
 package de.fab001.grocee.application.usecase;
 
-import de.fab001.grocee.domain.model.Einkaufsliste;
-import de.fab001.grocee.domain.model.Produkt;
-import de.fab001.grocee.domain.repository.EinkaufslisteRepository;
+import de.fab001.grocee.domain.model.ShoppingList;
+import de.fab001.grocee.domain.model.Product;
+import de.fab001.grocee.domain.repository.ShoppingListRepository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class AddProductToShoppingListService {
 
-    private final EinkaufslisteRepository repository;
+    private final ShoppingListRepository repository;
 
-    public AddProductToShoppingListService(EinkaufslisteRepository repository) {
+    public AddProductToShoppingListService(ShoppingListRepository repository) {
         this.repository = repository;
     }
 
-    public void produktHinzufügen(UUID einkaufslisteId, Produkt produkt) {
-        Optional<Einkaufsliste> optionalListe = repository.findById(einkaufslisteId);
-        if (optionalListe.isEmpty()) {
+    public void addProduct(UUID einkaufslisteId, Product product) {
+        Optional<ShoppingList> optionalList = repository.findById(einkaufslisteId);
+        if (optionalList.isEmpty()) {
             throw new IllegalArgumentException("Einkaufsliste nicht gefunden");
         }
 
-        Einkaufsliste liste = optionalListe.get();
-        liste.produktHinzufügen(produkt);
-        repository.safe(liste);
+        ShoppingList list = optionalList.get();
+        list.addProduct(product);
+        repository.safe(list);
     }
 }

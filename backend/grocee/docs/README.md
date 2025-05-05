@@ -22,6 +22,8 @@ Die folgende Tabelle dokumentiert zentrale Begriffe der Domäne „Einkaufsliste
 | **Benutzer**        | Person, die die App nutzt – alleine oder in einer WG                        |
 | **WG-Mitglied**     | Benutzer innerhalb einer Wohngemeinschaft                                   |
 
+//TODO Update Namen ins Englische
+
 Diese Begriffe werden 1:1 in Klassen, Methoden und UI übernommen, um ein durchgängiges Vokabular sicherzustellen.
 // Angaben könnnen sich im Laufe der Entwicklung angepasst oder hinzugefügt werden
 
@@ -36,7 +38,7 @@ Diese Begriffe werden 1:1 in Klassen, Methoden und UI übernommen, um ein durchg
 | **Aggregate**       | `Einkaufsliste`                             | Gruppiert Produkte, sichert Invarianten (keine Duplikate)                 |
 | **Repository**      | `ProduktRepository`, `EinkaufslisteRepository` | Kapselt den Zugriff auf Persistenz, unabhängig von konkreter Technik     |
 | **Domain Service**  | `KostenaufteilungService`, `BudgetCheckService` | Geschäftslogik, die keiner konkreten Entity zugeordnet ist               |
-
+// TODO Update Namen ins Englische
 ---
 
 ### ✅ Muster-Begründungen
@@ -57,3 +59,10 @@ Im nächsten Schritt folgt die Umsetzung der Clean Architecture und die Zuordnun
 
 
 # 2. Schichtarchitektur planen und begründen
+
+
+# 4. Refactoring
+
+Im Rahmen des Refactoring sollten wir typische Code Smells identifizieren und beseitigen:
+
+//TODO Füge Beschreibung für kommenden Commit rein

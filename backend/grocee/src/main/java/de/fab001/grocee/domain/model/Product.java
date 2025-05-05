@@ -10,11 +10,11 @@ public class Product {
     private String brand;
     private ExpirationDate expiration;
 
-    public Product(String name, String kategorie, String marke, ExpirationDate expiration) {
+    public Product(String name, String category, String brand, ExpirationDate expiration) {
         this.id = UUID.randomUUID();
         this.name = name;
-        this.category = kategorie;
-        this.brand = marke;
+        this.category = category;
+        this.brand = brand;
         this.expiration = expiration;
     }
 
@@ -26,11 +26,11 @@ public class Product {
         return name;
     }
 
-    public ExpirationDate getHaltbarkeit() {
+    public ExpirationDate gExpirationDate() {
         return expiration;
     }
 
-    public void aktualisiereHaltbarkeit(ExpirationDate neu) {
+    public void setExpirationDate(ExpirationDate neu) {
         this.expiration = neu;
     }
 

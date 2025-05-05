@@ -3,10 +3,12 @@ package de.fab001.grocee.application.usecase;
 import de.fab001.grocee.domain.model.ShoppingList;
 import de.fab001.grocee.domain.model.Product;
 import de.fab001.grocee.domain.repository.ShoppingListRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class AddProductToShoppingListService {
 
     private final ShoppingListRepository repository;

@@ -10,6 +10,10 @@ public class ShoppingList {
         this.id = UUID.randomUUID();
     }
 
+    public ShoppingList(UUID id) {
+        this.id = id;
+    }
+
     public void addProduct(Product product) {
         Optional<Product> existing = products.stream()
             .filter(p -> p.getName().equalsIgnoreCase(product.getName()))

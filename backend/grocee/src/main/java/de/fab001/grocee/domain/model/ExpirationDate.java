@@ -18,7 +18,7 @@ public final class ExpirationDate {
     }
 
     public boolean isCloseToExpire() {
-        return date.isBefore(LocalDate.now().plusDays(3));
+        return date.isBefore(LocalDate.now().plusDays(7)) && !isExpired();
     }
 
     public LocalDate getDate() {

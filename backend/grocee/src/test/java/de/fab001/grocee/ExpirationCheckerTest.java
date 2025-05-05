@@ -13,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ExpirationCheckerTest {
 
+    @Test 
+    void shouldAlwaysBeTrue(){
+        assertTrue(true);
+    }
+
     @Test
     void findsOnlyExpiredProducts() {
         Product p1 = new Product("Milch", "Getränk", "Marke A",

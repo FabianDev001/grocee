@@ -34,6 +34,14 @@ public class Product {
         this.expiration = neu;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

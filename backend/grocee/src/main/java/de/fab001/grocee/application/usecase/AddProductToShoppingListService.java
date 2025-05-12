@@ -17,14 +17,49 @@ public class AddProductToShoppingListService {
         this.repository = repository;
     }
 
-    public void addProduct(UUID einkaufslisteId, Product product) {
-        Optional<ShoppingList> optionalList = repository.findById(einkaufslisteId);
+    public void addProduct(UUID shoppingListId, Product product) {
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Produktname (name) ist erforderlich.");
+        }
+        if (product.getCategory() == null || product.getCategory().trim().isEmpty()) {
+            throw new IllegalArgumentException("Kategorie (category) ist erforderlich.");
+        }
+        if (product.getBrand() == null || product.getBrand().trim().isEmpty()) {
+            throw new IllegalArgumentException("Marke (brand) ist erforderlich.");
+        }
+        if (product.getExpirationDate() == null) {
+            throw new IllegalArgumentException("Haltbarkeitsdatum (expiration) ist erforderlich.");
+        }
+        Optional<ShoppingList> optionalList = repository.findById(shoppingListId.toString());
         if (optionalList.isEmpty()) {
             throw new IllegalArgumentException("Einkaufsliste nicht gefunden");
         }
 
         ShoppingList list = optionalList.get();
         list.addProduct(product);
-        repository.safe(list);
+        repository.save(list);
     }
+
+    public void setBuyer(UUID shoppingListId, String productId, String buyerId) {
+        Optional<ShoppingList> optionalList = repository.findById(shoppingListId.toString());
+        if (optionalList.isEmpty()) {
+            throw new IllegalArgumentException("Einkaufsliste nicht gefunden");
+        }
+        if (buyerId == null) {
+            throw new IllegalArgumentException("Käufer nicht gefunden");
+        }
+
+        ShoppingList list = optionalList.get();
+        list.findById(UUID.fromString(productId)).setBoughtBy(buyerId);
+        repository.save(list);
+    }
+
+    public void setBuyer(UUID shoppingListId, String productId) {
+        Optional<ShoppingList> optionalList = repository.findById(shoppingListId.toString());
+        ShoppingList list = optionalList.get();
+
+        list.findById(UUID.fromString(productId)).setBoughtBy(null);
+        repository.save(list);
+    }
+
 }

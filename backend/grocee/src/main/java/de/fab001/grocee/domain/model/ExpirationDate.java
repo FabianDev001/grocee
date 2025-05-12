@@ -2,9 +2,17 @@ package de.fab001.grocee.domain.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import jakarta.persistence.*;
 
+@Embeddable
 public final class ExpirationDate {
-    private final LocalDate date;
+    @Column(name = "expiration_date")
+    private LocalDate date;
+
+    // Konstruktur für die Tests notwendig
+    public ExpirationDate() {
+        this.date = LocalDate.now().plusDays(7);
+    }
 
     public ExpirationDate(LocalDate datum) {
         if (datum == null || datum.isBefore(LocalDate.now().minusYears(5))) {
@@ -37,4 +45,5 @@ public final class ExpirationDate {
     public int hashCode() {
         return Objects.hash(date);
     }
+
 }

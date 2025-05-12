@@ -4,27 +4,27 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fab001.grocee.domain.model.ExpirationDate;
 import de.fab001.grocee.domain.model.Product;
 import de.fab001.grocee.domain.model.ShoppingList;
-import de.fab001.grocee.adapters.InMemoryShoppingListRepository;
+import de.fab001.grocee.domain.repository.ShoppingListRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ShoppingListControllerTest {
+@Transactional
+class ShoppingListControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,20 +33,18 @@ public class ShoppingListControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private InMemoryShoppingListRepository shoppingListRepository;
+    private ShoppingListRepository shoppingListRepository;
 
-    @Test 
-    void shouldAlwaysBeTrue(){
-        assertTrue(true);
-    }
-
+  
     @Test
     void addProductToList_success() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId);
-        shoppingListRepository.safe(list);
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
 
         Product product = new Product("Banana", "Fruit", "Chiquita", new ExpirationDate(LocalDate.now().plusDays(5)));
+        product.setNeededBy(UUID.randomUUID().toString());
+        product.setBoughtBy(UUID.randomUUID().toString());
 
         mockMvc.perform(post("/shoppinglists/" + listId + "/products")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -57,7 +55,7 @@ public class ShoppingListControllerTest {
     @Test
     void getExpiringProducts_statusClassification() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId);
+        ShoppingList list = new ShoppingList(listId, "Testliste");
 
         // Abgelaufen: gestern
         Product expired = new Product("Joghurt", "Milchprodukte", "Gut&Günstig",
@@ -72,7 +70,7 @@ public class ShoppingListControllerTest {
         list.addProduct(expired);
         list.addProduct(expiring);
         list.addProduct(ok);
-        shoppingListRepository.safe(list);
+        shoppingListRepository.save(list);
 
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
                 .andExpect(status().isOk())
@@ -84,8 +82,8 @@ public class ShoppingListControllerTest {
     @Test
     void getExpiringProducts_emptyList_returnsEmptyArray() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId);
-        shoppingListRepository.safe(list);
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
 
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
                 .andExpect(status().isOk())
@@ -98,6 +96,103 @@ public class ShoppingListControllerTest {
         UUID listId = UUID.randomUUID();
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getCostAllocation_returnsCorrectDebts() throws Exception {
+        UUID listId = UUID.randomUUID();
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+
+        UUID userA = UUID.randomUUID();
+        UUID userB = UUID.randomUUID();
+
+        Product p1 = new Product("Brot", "Backwaren", "Bäcker", new ExpirationDate(LocalDate.now().plusDays(2)), 10.0, userA.toString(), userB.toString(), false);
+        Product p2 = new Product("Milch", "Milchprodukte", "Molkerei", new ExpirationDate(LocalDate.now().plusDays(5)), 5.0, userB.toString(), userA.toString(), false);
+        Product p3 = new Product("Butter", "Milchprodukte", "Molkerei", new ExpirationDate(LocalDate.now().plusDays(5)), 3.0, userA.toString(), userB.toString(), true);
+
+        list.addProduct(p1);
+        list.addProduct(p2);
+        list.addProduct(p3);
+        shoppingListRepository.save(list);
+
+        mockMvc.perform(get("/shoppinglists/" + listId + "/cost-allocation"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$['" + userA + "']['" + userB + "']").value(10.0))
+                .andExpect(jsonPath("$['" + userB + "']['" + userA + "']").value(5.0))
+                .andExpect(jsonPath("$['" + userA + "']['" + userB + "']").value(10.0));
+    }
+
+    @Test
+    void addProductToList_missingExpiration_returns400() throws Exception {
+        UUID listId = UUID.randomUUID();
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
+
+        Product product = new Product();
+        product.setName("Banana");
+        product.setCategory("Fruit");
+        product.setBrand("Chiquita");
+        // Keine expiration gesetzt
+
+        mockMvc.perform(post("/shoppinglists/" + listId + "/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", org.hamcrest.Matchers.containsString("Product expiration date is required")));
+    }
+
+    @Test
+    void addProductToList_missingName_returns400() throws Exception {
+        UUID listId = UUID.randomUUID();
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
+
+        Product product = new Product();
+        product.setCategory("Fruit");
+        product.setBrand("Chiquita");
+        product.setExpiration(new ExpirationDate(LocalDate.now().plusDays(5)));
+
+        mockMvc.perform(post("/shoppinglists/" + listId + "/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", org.hamcrest.Matchers.containsString("Product name is required")));
+    }
+
+    @Test
+    void addProductToList_missingCategory_returns400() throws Exception {
+        UUID listId = UUID.randomUUID();
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
+
+        Product product = new Product();
+        product.setName("Banana");
+        product.setBrand("Chiquita");
+        product.setExpiration(new ExpirationDate(LocalDate.now().plusDays(5)));
+
+        mockMvc.perform(post("/shoppinglists/" + listId + "/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", org.hamcrest.Matchers.containsString("Product category is required")));
+    }
+
+    @Test
+    void addProductToList_missingBrand_returns400() throws Exception {
+        UUID listId = UUID.randomUUID();
+        ShoppingList list = new ShoppingList(listId, "Testliste");
+        shoppingListRepository.save(list);
+
+        Product product = new Product();
+        product.setName("Banana");
+        product.setCategory("Fruit");
+        product.setExpiration(new ExpirationDate(LocalDate.now().plusDays(5)));
+
+        mockMvc.perform(post("/shoppinglists/" + listId + "/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", org.hamcrest.Matchers.containsString("Product brand is required")));
     }
 
 } 

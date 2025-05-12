@@ -13,12 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ExpirationCheckerTest {
 
-    @Test 
-    void shouldAlwaysBeTrue(){
-        assertTrue(true);
-    }
-
-    @Test
+   @Test
     void findsOnlyExpiredProducts() {
         Product p1 = new Product("Milch", "Getränk", "Marke A",
                 new ExpirationDate(LocalDate.now().minusDays(1)));
@@ -31,7 +26,6 @@ class ExpirationCheckerTest {
         ExpirationChecker prefer = new ExpirationChecker();
 
         List<Product> expired = prefer.findExpired(products);
-
         assertEquals(2, expired.size());
         assertTrue(expired.contains(p1));
         assertTrue(expired.contains(p3));

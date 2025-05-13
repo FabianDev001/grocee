@@ -1,0 +1,396 @@
+{
+  "info": {
+    "name": "Grocee API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Einkaufslisten",
+      "item": [
+        {
+          "name": "Alle Einkaufslisten abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eine Einkaufsliste anlegen",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wocheneinkauf\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eine Einkaufsliste abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eine Einkaufsliste aktualisieren",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Monatseinkauf\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eine Einkaufsliste löschen",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Benutzer",
+      "item": [
+        {
+          "name": "Alle Benutzer abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Einen Benutzer erstellen",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Max Mustermann\",\n  \"email\": \"max@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Einen Benutzer abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/users/{{userId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Einen Benutzer aktualisieren",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:8080/users/{{userId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maximilian Mustermann\",\n  \"email\": \"maximilian@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Einen Benutzer löschen",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/users/{{userId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Benutzer nach E-Mail suchen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/users/by-email?email={{userEmail}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                "by-email"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{userEmail}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Produkte",
+      "item": [
+        {
+          "name": "Alle Produkte einer Liste abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}",
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Produkt zu Liste hinzufügen",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}",
+                "products"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Milch\",\n  \"category\": \"Milchprodukte\",\n  \"brand\": \"Weihenstephan\",\n  \"expirationDate\": {\n    \"date\": \"{{$isoTimestamp}}\"\n  },\n  \"price\": 1.99,\n  \"neededBy\": \"{{userId}}\",\n  \"boughtBy\": \"{{buyerId}}\",\n  \"paid\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Produkt aus Liste löschen",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}/products/{{productId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}",
+                "products",
+                "{{productId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spezielle Funktionen",
+      "item": [
+        {
+          "name": "Ablaufende Produkte abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}/expiring-products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}",
+                "expiring-products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Kostenaufteilung berechnen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/shoppinglists/{{shoppingListId}}/cost-allocation",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "shoppinglists",
+                "{{shoppingListId}}",
+                "cost-allocation"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "shoppingListId",
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "key": "userId",
+      "value": "11111111-1111-1111-1111-111111111111"
+    },
+    {
+      "key": "buyerId",
+      "value": "22222222-2222-2222-2222-222222222222"
+    },
+    {
+      "key": "userEmail",
+      "value": "user@example.com"
+    },
+    {
+      "key": "productId",
+      "value": "33333333-3333-3333-3333-333333333333"
+    }
+  ]
+} 

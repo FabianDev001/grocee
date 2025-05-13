@@ -4,6 +4,7 @@ import de.fab001.grocee.domain.model.Product;
 import de.fab001.grocee.domain.model.ProductTemplate;
 import de.fab001.grocee.domain.model.ShoppingList;
 import de.fab001.grocee.domain.model.ShoppingListItem;
+import de.fab001.grocee.domain.service.ProductTemplateService;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -24,6 +25,9 @@ public class TestShoppingList extends ShoppingList {
     @Transient
     private final List<Product> products = new ArrayList<>();
     
+    @Transient
+    private ProductTemplateService productTemplateService;
+    
     public TestShoppingList() {
         super();
     }
@@ -33,20 +37,46 @@ public class TestShoppingList extends ShoppingList {
     }
     
     /**
+     * Injects the ProductTemplateService for proper template persistence.
+     * This is used by test methods to ensure templates are correctly stored.
+     */
+    public void setProductTemplateService(ProductTemplateService service) {
+        this.productTemplateService = service;
+    }
+    
+    /**
      * Adds a product to this shopping list.
      * This method is added purely for testing convenience.
+     * @throws IllegalArgumentException if a product with the same name already exists
      */
+    @Override
     public void addProduct(Product product) {
+        // Check if a product with the same name already exists
+        if (containsProductWithName(product.getName())) {
+            throw new IllegalArgumentException("Ein Produkt mit dem Namen '" + product.getName() + "' existiert bereits in dieser Einkaufsliste.");
+        }
+        
         products.add(product);
         product.setShoppingList(this);
         
-        // Create a proper ShoppingListItem for persistence
-        ProductTemplate template = new ProductTemplate(
-            product.getName(),
-            product.getBrand(),
-            product.getCategory()
-        );
+        // Get a properly persisted template
+        ProductTemplate template;
+        if (productTemplateService != null) {
+            template = productTemplateService.findOrCreate(
+                product.getName(), 
+                product.getBrand(), 
+                product.getCategory()
+            );
+        } else {
+            // Fallback for when service is not available
+            template = new ProductTemplate(
+                product.getName(),
+                product.getBrand(),
+                product.getCategory()
+            );
+        }
         
+        // Create ShoppingListItem with the template
         ShoppingListItem item = new ShoppingListItem(
             template,
             this,

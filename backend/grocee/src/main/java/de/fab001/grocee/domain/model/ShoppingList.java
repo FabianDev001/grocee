@@ -31,7 +31,33 @@ public class ShoppingList {
         item.setShoppingList(this);
     }
 
+    /**
+     * Checks if a product with the given name already exists in this shopping list.
+     * The comparison is case-insensitive.
+     * @param productName the name to check
+     * @return true if a product with the given name exists, false otherwise
+     */
+    public boolean containsProductWithName(String productName) {
+        if (productName == null) {
+            return false;
+        }
+        
+        return items.stream()
+            .map(item -> item.getProductTemplate().getName())
+            .anyMatch(name -> name.equalsIgnoreCase(productName));
+    }
+
+    /**
+     * Note: This method creates a transient ProductTemplate that must be persisted
+     * before the ShoppingListItem. In production code, use ProductTemplateService 
+     * to ensure the template is properly persisted.
+     * @throws IllegalArgumentException if a product with the same name already exists
+     */
     public void addProduct(Product product) {
+        if (containsProductWithName(product.getName())) {
+            throw new IllegalArgumentException("Ein Produkt mit dem Namen '" + product.getName() + "' existiert bereits in dieser Einkaufsliste.");
+        }
+        
         ProductTemplate template = new ProductTemplate(
             product.getName(),
             product.getBrand(),

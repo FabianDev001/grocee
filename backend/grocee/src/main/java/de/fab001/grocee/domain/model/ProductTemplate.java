@@ -9,8 +9,14 @@ public class ProductTemplate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(nullable = false)
     private String name;
+    
+    @Column(nullable = false)
     private String brand;
+    
+    @Column(nullable = false)
     private String category;
 
     public ProductTemplate() {}

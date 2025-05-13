@@ -1,6 +1,7 @@
 package de.fab001.grocee.domain.model;
 
 import jakarta.persistence.*;
+import java.util.UUID;
 
 @Entity
 public class ShoppingListItem {
@@ -8,7 +9,7 @@ public class ShoppingListItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, optional = false)
     private ProductTemplate productTemplate;
 
     @ManyToOne(optional = false)
@@ -67,10 +68,15 @@ public class ShoppingListItem {
             this.expirationDate
         );
         
+        // Use the ShoppingListItem ID as the product ID
+        String productId = this.id != null ? this.id.toString() : UUID.randomUUID().toString();
+        product.setId(productId);
+        
         product.setPrice(this.price);
         product.setNeededBy(this.neededBy);
         product.setBoughtBy(this.boughtBy);
         product.setPaid(this.isPaid);
+        product.setShoppingList(this.shoppingList);
         
         return product;
     }

@@ -3,7 +3,11 @@ package de.fab001.grocee;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fab001.grocee.domain.model.ExpirationDate;
 import de.fab001.grocee.domain.model.Product;
+import de.fab001.grocee.domain.model.ProductTemplate;
+import de.fab001.grocee.domain.model.ShoppingList;
+import de.fab001.grocee.domain.model.ShoppingListItem;
 import de.fab001.grocee.domain.repository.ShoppingListRepository;
+import de.fab001.grocee.domain.service.ProductTemplateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,43 +36,72 @@ public class ExpiredProductsEndpointTest {
 
     @Autowired
     private ShoppingListRepository shoppingListRepository;
+    
+    @Autowired
+    private ProductTemplateService productTemplateService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Helper method to create a ShoppingList with product items and ensure it's properly saved
+     */
+    private ShoppingList createTestShoppingList(UUID id, String name) {
+        // Use regular ShoppingList instead of TestShoppingList
+        ShoppingList list = new ShoppingList(id, name);
+        shoppingListRepository.save(list); // Save before adding items to ensure it exists
+        return list;
+    }
+    
+    /**
+     * Helper method to add a product to a shopping list
+     */
+    private void addProductToList(ShoppingList list, String name, String category, String brand, 
+                                 LocalDate expirationDate, String neededBy, String boughtBy, boolean isPaid) {
+        // Create a ProductTemplate using the service to avoid uniqueness constraint violations
+        ProductTemplate template = productTemplateService.findOrCreate(name, brand, category);
+        
+        // Create a ShoppingListItem for the product
+        ShoppingListItem item = new ShoppingListItem(
+            template,
+            list,
+            expirationDate != null ? new ExpirationDate(expirationDate) : null,
+            0.0, // price
+            neededBy != null ? neededBy : UUID.randomUUID().toString(),
+            boughtBy,
+            isPaid
+        );
+        
+        // Add the item to the list
+        list.addItem(item);
+        
+        // Save the updated list
+        shoppingListRepository.save(list);
+    }
+
     @Test
     void getExpiringProducts_allProductStatuses_returnsCorrectClassification() throws Exception {
         UUID listId = UUID.randomUUID();
-        TestShoppingList list = new TestShoppingList(listId, "Test Shopping List");
+        ShoppingList list = createTestShoppingList(listId, "Test Shopping List");
 
-        // Create products with various expiration dates
-        Product expired = new Product("Eggs", "Dairy", "Farm Fresh", 
-                new ExpirationDate(LocalDate.now().minusDays(2)));
+        // Add products with various expiration dates
+        addProductToList(list, "Eggs", "Dairy", "Farm Fresh", 
+                LocalDate.now().minusDays(2), null, null, false);
         
-        Product expiringToday = new Product("Bread", "Bakery", "Local Bakery",
-                new ExpirationDate(LocalDate.now()));
+        addProductToList(list, "Bread", "Bakery", "Local Bakery",
+                LocalDate.now(), null, null, false);
         
-        Product expiringSoon = new Product("Milk", "Dairy", "Brand A",
-                new ExpirationDate(LocalDate.now().plusDays(3)));
+        addProductToList(list, "Milk", "Dairy", "Brand A",
+                LocalDate.now().plusDays(3), null, null, false);
         
-        Product expiringEdgeCase = new Product("Yogurt", "Dairy", "Brand B",
-                new ExpirationDate(LocalDate.now().plusDays(6)));
+        addProductToList(list, "Yogurt", "Dairy", "Brand B",
+                LocalDate.now().plusDays(6), null, null, false);
         
-        Product notExpiringSoon = new Product("Cheese", "Dairy", "Brand C",
-                new ExpirationDate(LocalDate.now().plusDays(7)));
+        addProductToList(list, "Cheese", "Dairy", "Brand C",
+                LocalDate.now().plusDays(7), null, null, false);
         
-        Product farFromExpiring = new Product("Canned Beans", "Canned Goods", "Brand D",
-                new ExpirationDate(LocalDate.now().plusDays(365)));
-
-        // Add products to the list
-        list.addProduct(expired);
-        list.addProduct(expiringToday);
-        list.addProduct(expiringSoon);
-        list.addProduct(expiringEdgeCase);
-        list.addProduct(notExpiringSoon);
-        list.addProduct(farFromExpiring);
-        
-        shoppingListRepository.save(list);
+        addProductToList(list, "Canned Beans", "Canned Goods", "Brand D",
+                LocalDate.now().plusDays(365), null, null, false);
 
         // Perform the request and validate response
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
@@ -84,17 +117,11 @@ public class ExpiredProductsEndpointTest {
     @Test
     void getExpiringProducts_productWithNullExpirationDate_returnsUnknownStatus() throws Exception {
         UUID listId = UUID.randomUUID();
-        TestShoppingList list = new TestShoppingList(listId, "Test List");
+        ShoppingList list = createTestShoppingList(listId, "Test List");
         
-        // Create a product without setting expiration date
-        Product product = new Product();
-        product.setName("Test Product");
-        product.setCategory("Test Category");
-        product.setBrand("Test Brand");
-        // Deliberately not setting expiration date
-        
-        list.addProduct(product);
-        shoppingListRepository.save(list);
+        // Add a product with null expiration date
+        addProductToList(list, "Test Product", "Test Category", "Test Brand", 
+                        null, UUID.randomUUID().toString(), null, false);
 
         // Perform request and validate response
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
@@ -105,16 +132,10 @@ public class ExpiredProductsEndpointTest {
     @Test
     void getExpiringProducts_verifyResponseStructure() throws Exception {
         UUID listId = UUID.randomUUID();
-        TestShoppingList list = new TestShoppingList(listId, "Test List");
+        ShoppingList list = createTestShoppingList(listId, "Test List");
         
-        Product product = new Product("Test Product", "Test Category", "Test Brand",
-                new ExpirationDate(LocalDate.now().plusDays(5)));
-        product.setPrice(9.99);
-        product.setNeededBy("User123");
-        product.setBoughtBy("User456");
-        
-        list.addProduct(product);
-        shoppingListRepository.save(list);
+        addProductToList(list, "Test Product", "Test Category", "Test Brand",
+                LocalDate.now().plusDays(5), "User123", "User456", false);
 
         // Perform request and get the JSON response
         MvcResult result = mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
@@ -140,20 +161,19 @@ public class ExpiredProductsEndpointTest {
     void getExpiringProducts_multipleListsWithSameProductNames_onlyReturnsProductsFromRequestedList() throws Exception {
         // Create first list
         UUID listId1 = UUID.randomUUID();
-        TestShoppingList list1 = new TestShoppingList(listId1, "List 1");
-        Product product1 = new Product("Milk", "Dairy", "Brand X", 
-                new ExpirationDate(LocalDate.now().minusDays(1)));
-        list1.addProduct(product1);
+        ShoppingList list1 = createTestShoppingList(listId1, "List 1");
         
         // Create second list with same product name but different expiration
         UUID listId2 = UUID.randomUUID();
-        TestShoppingList list2 = new TestShoppingList(listId2, "List 2");
-        Product product2 = new Product("Milk", "Dairy", "Brand X", 
-                new ExpirationDate(LocalDate.now().plusDays(10)));
-        list2.addProduct(product2);
+        ShoppingList list2 = createTestShoppingList(listId2, "List 2");
         
-        shoppingListRepository.save(list1);
-        shoppingListRepository.save(list2);
+        // Add product to first list
+        addProductToList(list1, "Milk", "Dairy", "Brand X", 
+                LocalDate.now().minusDays(1), null, null, false);
+        
+        // Add product to second list
+        addProductToList(list2, "Milk", "Dairy", "Brand X", 
+                LocalDate.now().plusDays(10), null, null, false);
 
         // Check first list - should have expired product
         mockMvc.perform(get("/shoppinglists/" + listId1 + "/expiring-products"))

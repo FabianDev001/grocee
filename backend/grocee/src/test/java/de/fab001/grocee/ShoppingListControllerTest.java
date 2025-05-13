@@ -39,7 +39,7 @@ class ShoppingListControllerTest {
     @Test
     void addProductToList_success() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         Product product = new Product("Banana", "Fruit", "Chiquita", new ExpirationDate(LocalDate.now().plusDays(5)));
@@ -55,7 +55,7 @@ class ShoppingListControllerTest {
     @Test
     void getExpiringProducts_statusClassification() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
 
         // Abgelaufen: gestern
         Product expired = new Product("Joghurt", "Milchprodukte", "Gut&Günstig",
@@ -82,7 +82,7 @@ class ShoppingListControllerTest {
     @Test
     void getExpiringProducts_emptyList_returnsEmptyArray() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         mockMvc.perform(get("/shoppinglists/" + listId + "/expiring-products"))
@@ -101,7 +101,7 @@ class ShoppingListControllerTest {
     @Test
     void getCostAllocation_returnsCorrectDebts() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
 
         UUID userA = UUID.randomUUID();
         UUID userB = UUID.randomUUID();
@@ -125,7 +125,7 @@ class ShoppingListControllerTest {
     @Test
     void addProductToList_missingExpiration_returns400() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         Product product = new Product();
@@ -144,7 +144,7 @@ class ShoppingListControllerTest {
     @Test
     void addProductToList_missingName_returns400() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         Product product = new Product();
@@ -162,7 +162,7 @@ class ShoppingListControllerTest {
     @Test
     void addProductToList_missingCategory_returns400() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         Product product = new Product();
@@ -180,7 +180,7 @@ class ShoppingListControllerTest {
     @Test
     void addProductToList_missingBrand_returns400() throws Exception {
         UUID listId = UUID.randomUUID();
-        ShoppingList list = new ShoppingList(listId, "Testliste");
+        TestShoppingList list = new TestShoppingList(listId, "Testliste");
         shoppingListRepository.save(list);
 
         Product product = new Product();

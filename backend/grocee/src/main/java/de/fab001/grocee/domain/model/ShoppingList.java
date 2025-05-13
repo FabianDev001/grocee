@@ -4,13 +4,15 @@ import java.util.*;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
 public class ShoppingList {
     @Id
     @Column(length = 36)
     private String id;
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Product> products = new ArrayList<>();
+    private List<ShoppingListItem> items = new ArrayList<>();
 
     private String name;
 
@@ -24,26 +26,67 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public void addProduct(Product product) {
-        Optional<Product> existing = products.stream()
-            .filter(p -> p.getName().equalsIgnoreCase(product.getName()))
-            .findFirst();
-        if (existing.isPresent()) {
-            throw new IllegalArgumentException("Produkt existiert bereits in der Liste");
-        }
-        product.setShoppingList(this);
-        products.add(product);
+    public void addItem(ShoppingListItem item) {
+        items.add(item);
+        item.setShoppingList(this);
     }
 
+    public void addProduct(Product product) {
+        ProductTemplate template = new ProductTemplate(
+            product.getName(),
+            product.getBrand(),
+            product.getCategory()
+        );
+        
+        ShoppingListItem item = new ShoppingListItem(
+            template,
+            this,
+            product.getExpirationDate(),
+            product.getPrice(),
+            product.getNeededBy(),
+            product.getBoughtBy(),
+            product.isPaid()
+        );
+        
+        addItem(item);
+    }
+    
+    /**
+     * Removes a product from this shopping list by its UUID.
+     * @param productId the UUID of the product to remove
+     * @return true if the product was found and removed, false otherwise
+     */
+    public boolean removeProduct(UUID productId) {
+        Optional<ShoppingListItem> itemToRemove = items.stream()
+            .filter(item -> {
+                Product product = item.getProduct();
+                return product != null && product.getId().equals(productId);
+            })
+            .findFirst();
+            
+        if (itemToRemove.isPresent()) {
+            items.remove(itemToRemove.get());
+            return true;
+        }
+        return false;
+    }
+    
     public List<Product> getProduct() {
-        return products;
+        return items.stream()
+            .map(ShoppingListItem::getProduct)
+            .toList();
+    }
+
+    public List<ShoppingListItem> getItems() {
+        return items;
     }
 
     public Product findById(UUID productId) {
-        return products.stream()
+        return items.stream()
             .filter(p -> p.getId().equals(productId))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException("Produkt nicht gefunden"));
+            .orElseThrow(() -> new IllegalArgumentException("Produkt nicht gefunden"))
+            .getProduct();
     }
 
     public UUID getId() {

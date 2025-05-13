@@ -63,6 +63,29 @@ public class ShoppingListController {
         }
     }
 
+    @DeleteMapping("/{listId}/products/{productId}")
+    public ResponseEntity<?> removeProductFromList(@PathVariable("listId") UUID shoppingListId, @PathVariable("productId") UUID productId) {
+        try {
+            var listOpt = shoppingListService.findById(shoppingListId);
+            if (listOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            var list = listOpt.get();
+            boolean removed = list.removeProduct(productId);
+            
+            if (!removed) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Save the updated shopping list
+            shoppingListService.updateShoppingList(shoppingListId, list);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}/expiring-products")
     public ResponseEntity<?> getExpiringProducts(@PathVariable("id") UUID shoppingListId) {
         var listOpt = shoppingListService.findById(shoppingListId);

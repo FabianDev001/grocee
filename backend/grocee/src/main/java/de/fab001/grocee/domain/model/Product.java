@@ -2,23 +2,14 @@ package de.fab001.grocee.domain.model;
 
 import java.util.Objects;
 import java.util.UUID;
-import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
 public class Product {
-    @Id
-    @Column(length = 36)
     private String id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shopping_list_id")
     private ShoppingList shoppingList;
-
     private String name;
     private String category;
     private String brand;
-    @Embedded
     @JsonProperty("expirationDate")
     private ExpirationDate expiration;
     private double price;

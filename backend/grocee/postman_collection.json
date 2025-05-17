@@ -301,7 +301,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Milch\",\n  \"category\": \"Milchprodukte\",\n  \"brand\": \"Weihenstephan\",\n  \"expirationDate\": {\n    \"date\": \"{{$isoTimestamp}}\"\n  },\n  \"price\": 1.99,\n  \"neededBy\": \"{{userId}}\",\n  \"boughtBy\": \"{{buyerId}}\",\n  \"paid\": false\n}"
+              "raw": "{\n  \"name\": \"Milch\",\n  \"category\": \"Milchprodukte\",\n  \"brand\": \"Weihenstephan\",\n  \"expirationDate\": {\n    \"date\": \"2025-06-15\"\n  },\n  \"price\": 1.99,\n  \"neededBy\": \"{{userId}}\",\n  \"boughtBy\": \"{{buyerId}}\",\n  \"paid\": false\n}"
             }
           }
         },
@@ -321,6 +321,224 @@
                 "{{shoppingListId}}",
                 "products",
                 "{{productId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wohngemeinschaften (WG)",
+      "item": [
+        {
+          "name": "Alle WGs abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/households",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eine WG erstellen",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/households",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meine WG\",\n  \"members\": [\n    {\n      \"id\": \"{{userId}}\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Eine WG mit mehreren Mitgliedern erstellen",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "http://localhost:8080/households",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Familien-WG\",\n  \"members\": [\n    {\n      \"id\": \"{{userId}}\"\n    },\n    {\n      \"id\": \"{{buyerId}}\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Eine WG abrufen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eine WG aktualisieren",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Neue WG-Bezeichnung\",\n  \"members\": [\n    {\n      \"id\": \"{{userId}}\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Ein neues Mitglied zur WG hinzufügen",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}"
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Unsere Familien-WG\",\n  \"members\": [\n    {\n      \"id\": \"{{userId}}\"\n    },\n    {\n      \"id\": \"{{buyerId}}\"\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Eine WG löschen",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Kostenaufteilung für eine WG berechnen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}/cost-allocation?shoppingListId={{shoppingListId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}",
+                "cost-allocation"
+              ],
+              "query": [
+                {
+                  "key": "shoppingListId",
+                  "value": "{{shoppingListId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Schulden zwischen WG-Mitgliedern berechnen",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/households/{{householdId}}/debts?shoppingListId={{shoppingListId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "households",
+                "{{householdId}}",
+                "debts"
+              ],
+              "query": [
+                {
+                  "key": "shoppingListId",
+                  "value": "{{shoppingListId}}"
+                }
               ]
             }
           }
@@ -350,7 +568,7 @@
           }
         },
         {
-          "name": "Kostenaufteilung berechnen",
+          "name": "Kostenaufteilung berechnen (Alte Methode)",
           "request": {
             "method": "GET",
             "url": {
@@ -391,6 +609,10 @@
     {
       "key": "productId",
       "value": "33333333-3333-3333-3333-333333333333"
+    },
+    {
+      "key": "householdId",
+      "value": "44444444-4444-4444-4444-444444444444"
     }
   ]
 } 

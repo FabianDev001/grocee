@@ -1,10 +1,10 @@
 package de.fab001.grocee.adapters;
 
 import de.fab001.grocee.domain.model.Household;
-import de.fab001.grocee.domain.model.HouseholdDTO;
+import de.fab001.grocee.adapters.dto.HouseholdDTO;
 import de.fab001.grocee.domain.model.Product;
 import de.fab001.grocee.domain.model.User;
-import de.fab001.grocee.domain.model.UserReference;
+import de.fab001.grocee.adapters.dto.UserReference;
 import de.fab001.grocee.domain.repository.HouseholdRepository;
 import de.fab001.grocee.domain.service.HouseholdService;
 import de.fab001.grocee.domain.service.ShoppingListService;

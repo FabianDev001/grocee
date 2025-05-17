@@ -1,7 +1,8 @@
-package de.fab001.grocee.domain.model;
+package de.fab001.grocee.adapters.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+ 
 
 /**
  * Data Transfer Object for creating/updating Households

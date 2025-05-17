@@ -1,8 +1,9 @@
 # Grocee
 
-[![Java](https://img.shields.io/badge/Backend-Java-blue.svg?style=flat&logo=java)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.7-green.svg?style=flat&logo=springboot)](https://spring.io/projects/spring-boot)
-[![Next.js](https://img.shields.io/badge/Frontend-Next.js-black.svg?style=flat&logo=next.js)](https://nextjs.org/)
+[![Java](https://img.shields.io/badge/Backend-Java_24-blue.svg?style=flat&logo=java)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4.5-green.svg?style=flat&logo=springboot)](https://spring.io/projects/spring-boot)
+[![SQLite](https://img.shields.io/badge/Database-SQLite-lightblue.svg?style=flat&logo=sqlite)](https://www.sqlite.org/)
+[![Postman](https://img.shields.io/badge/API_Testing-Postman-orange.svg?style=flat&logo=postman)](https://www.postman.com/)
 [![License](https://img.shields.io/github/license/FabianDev001/grocee?style=flat)](LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/FabianDev001/grocee/build.yml?branch=main)](../../actions)
 [![Coverage](https://img.shields.io/badge/coverage-90%25-success)](#)
@@ -30,13 +31,13 @@ Grocee soll helfen, den Alltag rund ums Einkaufen strukturiert, transparent und 
 
 | Layer      | Tool / Stack                  |
 |------------|-------------------------------|
-| Frontend   | [Next.js](https://nextjs.org/) + React |
-| Backend    | [Spring Boot](https://spring.io/) (Java) |
+| Backend    | [Spring Boot](https://spring.io/) 3.4.5 (Java 24) |
+| Frontend   | ~~Next.js~~ (Postman Collection temporär) |
 | Architektur | Clean Architecture + Domain Driven Design |
-| DB         | TBD (SQLite) |
-| Tests      | JUnit + Mocking (Mockito)     |
-| Build      | Maven / npm                   |
-| Dev Tools  | VS Code, Docker (optional)    |
+| DB         | SQLite |
+| Tests      | JUnit 5 + Mocking (Mockito)     |
+| Build      | Maven |
+| Dev Tools  | VS Code, Spring Dev Tools    |
 
 ---
 
@@ -52,8 +53,8 @@ grocee/
 │           ├── application/   # UseCases / Services
 │           ├── adapters/      # REST Controller, DTOs, Mappings
 │           └── plugins/       # DB / External / Framework-Anbindung
-├── frontend/           # Next.js App
-│   └── pages/          # SSR/CSR Views
+├── frontend/           # Postman Collection (temporär anstelle von Next.js)
+│   └── postman_collection.json  # API-Endpunkte für Testung
 ├── .gitignore
 ├── README.md
 ```
@@ -70,7 +71,7 @@ grocee/
 └── plugins
 ```
 
-**Domain** ist frei von Frameworks. **Application** orchestriert die Use Cases. Die **Adapters** sind z. B. Controller und Mapper. Die äußeren **Plugins** kapseln Technik wie Spring, DBs etc. Die Richtung der Abhängigkeiten zeigt _immer_ von außen nach innen.
+**Domain** ist frei von Frameworks. **Application** orchestriert die Use Cases. Die **Adapters** sind z. B. Controller und Mapper. Die äußeren **Plugins** kapseln Technik wie Spring, DBs etc. Die Richtung der Abhängigkeiten zeigt _immer_ von außen nach innen.
 
 ---
 
@@ -78,28 +79,28 @@ grocee/
 
 ### Backend
 ```bash
-cd backend
+cd backend/grocee
 ./mvnw spring-boot:run
 ```
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
+### Frontend (temporär)
+Statt einer Next.js-Frontend-Implementierung verwenden wir aktuell eine Postman Collection für API-Tests und Entwicklung. Die Postman Collection enthält alle verfügbaren Endpunkte und kann importiert werden:
 
-Standard-Port ist `http://localhost:3000`
-
+1. Postman öffnen
+2. Collection importieren aus: `frontend/postman_collection.json`
+3. Backend starten (siehe oben)
+4. API-Endpunkte über Postman nutzen (Standard: `http://localhost:8080`)
 
 ## ✅ Was ist geplant?
 
 - [x] Clean Architecture Setup
 - [x] Domain Layer inkl. Value Objects und Entities
 - [x] Einfache Produkt-API
+- [x] SQLite-Datenbankintegration
 - [ ] Auth + Session (JWT oder Clerk/Supabase)
-- [ ] Kostenaufteilungs-Logik
+- [x] Kostenaufteilungs-Logik
 - [ ] Budget-UI & Visualisierung
+- [ ] Next.js Frontend-Implementierung
 
 ---
 
@@ -121,7 +122,7 @@ MIT – [siehe LICENSE](./LICENSE)
 
 ---
 
-_„Ship early, refactor often.“_
+_„Ship early, refactor often."_
 
 ## Hinweis zur KI-Unterstützung
 

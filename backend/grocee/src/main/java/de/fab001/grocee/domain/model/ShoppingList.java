@@ -2,6 +2,7 @@ package de.fab001.grocee.domain.model;
 
 import java.util.*;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -12,6 +13,7 @@ public class ShoppingList {
     private String id;
 
     @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<ShoppingListItem> items = new ArrayList<>();
 
     private String name;

@@ -4,7 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.ManyToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +20,10 @@ public class User {
     
     private String name;
     private String email;
+
+    @ManyToMany(mappedBy = "members")
+    @JsonIgnore
+    private List<Household> households = new ArrayList<>();
 
     // Für JPA benötigt
     public User() {
@@ -61,5 +69,13 @@ public class User {
     
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Household> getHouseholds() {
+        return households;
+    }
+
+    public void setHouseholds(List<Household> households) {
+        this.households = households != null ? households : new ArrayList<>();
     }
 } 

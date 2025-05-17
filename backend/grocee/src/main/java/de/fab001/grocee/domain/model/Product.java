@@ -3,10 +3,14 @@ package de.fab001.grocee.domain.model;
 import java.util.Objects;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Product {
     private String id;
+    
+    @JsonIgnore
     private ShoppingList shoppingList;
+    
     private String name;
     private String category;
     private String brand;

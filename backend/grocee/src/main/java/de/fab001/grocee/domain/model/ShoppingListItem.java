@@ -2,6 +2,7 @@ package de.fab001.grocee.domain.model;
 
 import jakarta.persistence.*;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class ShoppingListItem {
@@ -13,6 +14,7 @@ public class ShoppingListItem {
     private ProductTemplate productTemplate;
 
     @ManyToOne(optional = false)
+    @JsonBackReference
     private ShoppingList shoppingList;
 
     @Embedded

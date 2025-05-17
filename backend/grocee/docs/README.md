@@ -18,6 +18,10 @@ Dieses Dokument beinhaltet eine vollständige technische Dokumentation des Einka
     * [Haltbarkeit prüfen](#72-haltbarkeit-prüfen)
     * [Kostenaufteilung durchführen](#73-kostenaufteilung-durchführen)
     * [Doppelte Produkte verhindern](#74-doppelte-produkte-verhindern)
+    * [Wohngemeinschaften verwalten](#75-wohngemeinschaften-verwalten)
+8. [Implementierungshinweise](#8-implementierungshinweise)
+    * [API-Nutzung über Postman](#81-api-nutzung-über-postman)
+    * [SQLite Dialect für Hibernate](#82-sqlite-dialect-für-hibernate)
 
 ---
 
@@ -252,3 +256,51 @@ Es darf nicht möglich sein, ein Produkt, das bereits in der Einkaufsliste exist
 #### Technische Umsetzung
 - Die Methode `containsProductWithName(String productName)` in `ShoppingList` prüft case-insensitive, ob ein Produkt mit diesem Namen bereits existiert.
 - Bei einem doppelten Produktnamen wird eine Exception geworfen und der REST-Controller gibt einen Fehler 400 zurück.
+
+### 7.5 Wohngemeinschaften verwalten
+
+#### Beschreibung
+Als Benutzer kann ich Wohngemeinschaften (Households) erstellen und verwalten, um gemeinsame Einkäufe und die Kostenaufteilung zu koordinieren. Eine WG hat einen Namen und besteht aus mehreren Mitgliedern (Benutzern).
+
+Folgende Funktionen werden unterstützt:
+1. **WG erstellen**: Eine neue Wohngemeinschaft mit Namen anlegen und Mitglieder hinzufügen
+2. **WG bearbeiten**: Namen ändern und Mitglieder hinzufügen oder entfernen
+3. **WG-Übersicht**: Alle Wohngemeinschaften und ihre Mitglieder anzeigen
+4. **WG löschen**: Eine nicht mehr benötigte Wohngemeinschaft entfernen
+
+#### Technische Umsetzung
+- Das `Household`-Entity repräsentiert eine Wohngemeinschaft mit einer many-to-many Beziehung zu Benutzern (`User`).
+- Für die Kommunikation zwischen Client und Server werden DTOs eingesetzt:
+  - `HouseholdDTO` für die Übermittlung von WG-Daten (Name und Mitgliederliste)
+  - `UserReference` für die Referenzierung von Benutzern über ihre IDs
+- Der `HouseholdController` bietet RESTful Endpoints:
+  - `POST /households`: Erstellt eine neue WG (mit Mitgliedern)
+  - `GET /households`: Listet alle WGs auf
+  - `GET /households/{id}`: Zeigt Details einer WG
+  - `PUT /households/{id}`: Aktualisiert eine WG (Name oder Mitglieder)
+  - `DELETE /households/{id}`: Löscht eine WG
+- Die DTOs befinden sich im `adapters.dto`-Paket, um eine klare Trennung zwischen externen Datenstrukturen und Domänenmodellen gemäß Clean Architecture zu gewährleisten.
+
+Durch die Implementierung dieses Use Cases wird das gemeinsame Einkaufen und die Kostenteilung in Wohngemeinschaften möglich, was eines der Hauptziele der Anwendung darstellt.
+
+## 8. Implementierungshinweise
+
+### 8.1 API-Nutzung über Postman
+
+Für die manuelle Interaktion mit der API ohne Frontend steht eine umfassende Postman-Collection zur Verfügung. Die Datei `postman_collection.json` im Hauptverzeichnis enthält vorkonfigurierte Requests für alle API-Endpunkte der Anwendung.
+
+#### Funktionen der Postman-Collection:
+- Vollständige Abdeckung aller API-Endpunkte
+- Vordefinierte Request-Beispiele mit Musterparametern
+- Variablen für IDs (z.B. `userId`, `householdId`, `shoppingListId`)
+- Strukturierte Organisation nach Ressourcentypen (Einkaufslisten, Benutzer, Produkte, Wohngemeinschaften)
+
+#### Verwendung:
+1. Importieren Sie die `postman_collection.json` in Postman
+2. Starten Sie die Spring Boot-Anwendung
+3. Erstellen Sie zunächst Benutzer über die entsprechenden Endpunkte
+4. Verwenden Sie die zurückgegebenen IDs für nachfolgende Requests
+
+Diese Collection ist besonders hilfreich für Entwicklungs- und Testzwecke sowie für das Verständnis der API-Struktur.
+
+

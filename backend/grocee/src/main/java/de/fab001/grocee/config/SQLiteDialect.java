@@ -1,18 +1,18 @@
 package de.fab001.grocee.config;
 
 import org.hibernate.dialect.DatabaseVersion;
-import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.hibernate.dialect.identity.IdentityColumnSupportImpl;
 
-public class SQLiteDialect extends Dialect {
+public class SQLiteDialect extends PostgreSQLDialect {
     public SQLiteDialect() {
-        super(DatabaseVersion.make(3, 32, 0));
+        super(DatabaseVersion.make(3, 0, 0));
     }
 
     @Override
     public IdentityColumnSupport getIdentityColumnSupport() {
-        return new IdentityColumnSupportImpl();
+        return new SQLiteIdentityColumnSupport();
     }
 
     @Override
@@ -25,23 +25,20 @@ public class SQLiteDialect extends Dialect {
         return false;
     }
 
-    @Override
-    public String getDropForeignKeyString() {
-        return "";
-    }
+    private static class SQLiteIdentityColumnSupport extends IdentityColumnSupportImpl {
+        @Override
+        public boolean supportsIdentityColumns() {
+            return true;
+        }
 
-    @Override
-    public String getAddForeignKeyConstraintString(String cn, String[] fk, String t, String[] pk, boolean r) {
-        return "";
-    }
+        @Override
+        public String getIdentitySelectString(String table, String column, int type) {
+            return "select last_insert_rowid()";
+        }
 
-    @Override
-    public String getAddPrimaryKeyConstraintString(String constraintName) {
-        return "";
-    }
-
-    @Override
-    public boolean supportsIfExistsBeforeTableName() {
-        return true;
+        @Override
+        public String getIdentityColumnString(int type) {
+            return "integer";
+        }
     }
 }
